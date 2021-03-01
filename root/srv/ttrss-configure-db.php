@@ -88,10 +88,10 @@ catch (PDOException $e) {
 $contents = file_get_contents($conffile);
 $new_conf = array();
 foreach ($config as $name => $value) {
-    if (!str_starts_with($name, 'TTRSS_')) {
-        $new_name = 'TTRSS_' . $name;
+    if (strpos($name, 'TTRSS_') === 0) {
+        $new_name = $name;        
     } else {
-        $new_name = $name;
+        $new_name = 'TTRSS_' . $name;
     }
     $new_conf[] = "putenv('${new_name}=${value}')";
     // $contents = preg_replace('/(define\s*\(\'' . $name . '\',\s*)(.*)(\);)/', '$1"' . $value . '"$3', $contents);
