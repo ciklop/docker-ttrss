@@ -86,7 +86,15 @@ catch (PDOException $e) {
 }
 
 $contents = file_get_contents($conffile);
+$new_conf = array();
 foreach ($config as $name => $value) {
-    $contents = preg_replace('/(define\s*\(\'' . $name . '\',\s*)(.*)(\);)/', '$1"' . $value . '"$3', $contents);
+    if (!str_starts_with($name, 'TTRSS_')) {
+        $new_name = 'TTRSS_' . $name;
+    } else {
+        $new_name = $name;
+    }
+    $new_conf[] = "putenv('${new_name}=${value}')";
+    // $contents = preg_replace('/(define\s*\(\'' . $name . '\',\s*)(.*)(\);)/', '$1"' . $value . '"$3', $contents);
+    $confpath = implode("\n", $new_conf);
 }
 file_put_contents($conffile, $contents);
